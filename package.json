@@ -1,0 +1,11 @@
+{
+  "name": "circuul",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "node packages/core/test/core.test.js",
+    "build": "echo \"packages ship as plain JS\""
+  }
+}

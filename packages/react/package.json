@@ -1,0 +1,16 @@
+{
+  "name": "@circuul/react",
+  "version": "0.1.0",
+  "description": "Circuul React / Next.js helpers",
+  "main": "src/index.js",
+  "license": "UNLICENSED",
+  "peerDependencies": {
+    "react": ">=17"
+  },
+  "dependencies": {
+    "@circuul/core": "0.1.0"
+  },
+  "files": [
+    "src"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@circuul/core",
+  "version": "0.1.0",
+  "description": "Circuul install attribution core client",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "license": "UNLICENSED",
+  "files": [
+    "src"
+  ]
+}
