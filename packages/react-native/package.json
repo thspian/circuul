@@ -1,9 +1,21 @@
 {
   "name": "@circuul/react-native",
   "version": "0.1.0",
-  "description": "Circuul React Native client",
+  "description": "Circuul app-install attribution client for React Native and Expo",
   "main": "src/index.js",
+  "types": "src/index.d.ts",
   "license": "UNLICENSED",
+  "author": "Thspian",
+  "keywords": ["circuul", "attribution", "react-native", "expo", "app-install"],
+  "homepage": "https://thspian.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thspian/circuul.git",
+    "directory": "packages/react-native"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "peerDependencies": {
     "react-native": "*",
     "@react-native-async-storage/async-storage": "*"

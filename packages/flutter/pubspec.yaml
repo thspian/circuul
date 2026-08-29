@@ -1,0 +1,19 @@
+name: circuul
+description: Circuul app-install attribution client for Flutter.
+version: 0.1.0
+homepage: https://thspian.com
+
+environment:
+  sdk: '>=2.19.0 <4.0.0'
+  flutter: '>=3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: '>=0.13.0 <2.0.0'
+  shared_preferences: '>=2.0.0 <3.0.0'
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: '>=2.0.0 <4.0.0'

@@ -1,7 +1,12 @@
-export function createClient(config: {
-  apiBase: string;
-  appToken: string;
-}): {
+export interface AttributionResult {
+  attributed: boolean;
+  reason?: string;
+  code?: string;
+  cpa_cents?: number;
+  duplicate?: boolean;
+}
+
+export interface CircuulClient {
   apiBase: string;
   appToken: string;
   recordClick(payload?: {
@@ -10,13 +15,19 @@ export function createClient(config: {
     user_agent?: string;
     ip?: string;
   }): Promise<any>;
-  match(payload?: Record<string, any>): Promise<{
-    attributed: boolean;
-    reason?: string;
-    code?: string;
-    cpa_cents?: number;
-    duplicate?: boolean;
-  }>;
-};
+  /** App-install attribution — call on first open from a mobile/RN app. */
+  match(payload?: Record<string, any>): Promise<AttributionResult>;
+  /** Web-visit attribution — call when the brand's landing page loads in a browser. */
+  visitConfirm(payload?: {
+    code: string;
+    user_agent?: string;
+    ip?: string;
+  }): Promise<AttributionResult>;
+}
+
+export function createClient(config: {
+  apiBase: string;
+  appToken: string;
+}): CircuulClient;
 
 export function extractCodeFromSearch(search?: string): string | null;

@@ -45,6 +45,7 @@ function createClient(config) {
     },
 
     /**
+     * App-install attribution — call on first open from a mobile/RN app.
      * Always resolves. Never throws. Unmatched is a normal outcome.
      * @returns {Promise<{ attributed: boolean, reason?: string, code?: string, cpa_cents?: number }>}
      */
@@ -54,6 +55,23 @@ function createClient(config) {
           app_token: appToken,
           ...payload,
         });
+        const data = json?.data;
+        if (data && typeof data.attributed === 'boolean') return data;
+        return { attributed: false, reason: 'invalid_response' };
+      } catch {
+        return { attributed: false, reason: 'network_error' };
+      }
+    },
+
+    /**
+     * Web-visit attribution — call when the brand's landing page loads in a browser.
+     * Always resolves. Never throws.
+     * @param {{ code: string, user_agent?: string, ip?: string }} payload
+     * @returns {Promise<{ attributed: boolean, reason?: string, code?: string, cpa_cents?: number }>}
+     */
+    async visitConfirm(payload = {}) {
+      try {
+        const { json } = await postJson(`${apiBase}/circuul/visit-confirm`, payload);
         const data = json?.data;
         if (data && typeof data.attributed === 'boolean') return data;
         return { attributed: false, reason: 'invalid_response' };
