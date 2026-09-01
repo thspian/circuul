@@ -6,6 +6,8 @@
   ],
   "scripts": {
     "test": "node packages/core/test/core.test.js",
-    "build": "echo \"packages ship as plain JS\""
+    "build": "echo \"packages ship as plain JS\"",
+    "release": "node scripts/publish.js",
+    "release:dry": "node scripts/publish.js --dry-run --no-bump"
   }
 }

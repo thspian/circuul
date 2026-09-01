@@ -34,6 +34,22 @@ Brands create campaigns, creators share unique referral links, and Circuul track
 
 ---
 
+## Release (maintainers)
+
+Bump all three packages to the same version and publish to npm (core → react → react-native):
+
+```bash
+npm run release -- --otp=XXXXXX          # patch bump (0.1.0 → 0.1.1)
+npm run release -- minor --otp=XXXXXX    # minor bump
+npm run release -- --no-bump --otp=XXXXXX  # publish current versions as-is
+```
+
+Or: `NPM_OTP=XXXXXX npm run release`
+
+Then commit the version bumps and push to GitHub.
+
+---
+
 ## React / Next.js / Vite (Web)
 
 ### Installation
