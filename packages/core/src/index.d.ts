@@ -17,9 +17,10 @@ export interface CircuulClient {
   }): Promise<any>;
   /** App-install attribution — call on first open from a mobile/RN app. */
   match(payload?: Record<string, any>): Promise<AttributionResult>;
-  /** Web-visit attribution — call when the brand's landing page loads in a browser. */
+  /** Web-visit attribution — always sends app_token with the request. */
   visitConfirm(payload?: {
     code: string;
+    install_id?: string;
     user_agent?: string;
     ip?: string;
   }): Promise<AttributionResult>;
@@ -31,3 +32,5 @@ export function createClient(config: {
 }): CircuulClient;
 
 export function extractCodeFromSearch(search?: string): string | null;
+
+export function shouldPersistMatched(result?: AttributionResult | null): boolean;

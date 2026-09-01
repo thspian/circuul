@@ -22,7 +22,12 @@ export interface InitOptions {
   autoConfirm?: boolean;
 }
 
-export function init(options: InitOptions): Promise<AttributionResult & { client: CircuulClient }>;
+export function init(
+  options: InitOptions
+): Promise<AttributionResult & { client?: CircuulClient }>;
 export function getStoredCode(): string | null;
 export function extractCodeFromSearch(search: string): string | null;
-export function createClient(options: { appToken: string; apiBase: string }): CircuulClient;
+export function createClient(options: {
+  appToken: string;
+  apiBase: string;
+}): CircuulClient;

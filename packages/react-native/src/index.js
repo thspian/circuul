@@ -1,4 +1,7 @@
-const { createClient } = require('@circuul/core');
+const {
+  createClient,
+  shouldPersistMatched,
+} = require('@thspian/circuul-core');
 
 const INSTALL_KEY = 'circuul_install_id';
 const MATCHED_KEY = 'circuul_matched';
@@ -12,6 +15,7 @@ try {
 }
 
 const memory = new Map();
+const inFlight = new Map();
 
 async function getItem(key) {
   if (AsyncStorage) return AsyncStorage.getItem(key);
@@ -58,17 +62,35 @@ async function init(options = {}) {
       return { client, attributed: false, reason: 'already_matched' };
     }
 
+    const flightKey = String(appToken);
+    if (inFlight.has(flightKey)) {
+      const result = await inFlight.get(flightKey);
+      return { client, ...result };
+    }
+
     const stored = await getItem(CODE_KEY);
-    const result = await client.match({
-      platform,
-      install_id: await ensureInstallId(),
-      android_referrer: androidReferrer,
-      code: code || stored || undefined,
-      clipboard_code: clipboardCode || undefined,
-      idfv,
-      gaid,
-    });
-    await setItem(MATCHED_KEY, '1');
+    const promise = client
+      .match({
+        platform,
+        install_id: await ensureInstallId(),
+        android_referrer: androidReferrer,
+        code: code || stored || undefined,
+        clipboard_code: clipboardCode || undefined,
+        idfv,
+        gaid,
+      })
+      .then(async (result) => {
+        if (shouldPersistMatched(result)) {
+          await setItem(MATCHED_KEY, '1');
+        }
+        return result;
+      })
+      .finally(() => {
+        inFlight.delete(flightKey);
+      });
+
+    inFlight.set(flightKey, promise);
+    const result = await promise;
     return { client, ...result };
   } catch {
     return { attributed: false, reason: 'error' };

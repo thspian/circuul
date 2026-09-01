@@ -1,22 +1,29 @@
 {
-  "name": "@circuul/core",
+  "name": "@thspian/circuul-core",
   "version": "0.1.0",
   "description": "Circuul install attribution core client — framework-agnostic",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "license": "UNLICENSED",
   "author": "Thspian",
-  "keywords": ["circuul", "attribution", "app-install", "web-visit"],
-  "homepage": "https://thspian.com",
+  "keywords": ["circuul", "attribution", "app-install", "web-visit", "thspian"],
   "repository": {
     "type": "git",
     "url": "https://github.com/thspian/circuul.git",
     "directory": "packages/core"
   },
+  "bugs": {
+    "url": "https://github.com/thspian/circuul/issues"
+  },
+  "homepage": "https://github.com/thspian/circuul/tree/main/packages/core#readme",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
-    "src"
+    "src",
+    "README.md"
   ]
 }

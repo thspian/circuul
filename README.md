@@ -23,14 +23,14 @@ Brands create campaigns, creators share unique referral links, and Circuul track
 
 | Package | Platform | Install |
 |---------|----------|---------|
-| `@circuul/core` | Shared JS HTTP client | `npm install @circuul/core` |
-| `@circuul/react` | React, Next.js, Vite, CRA | `npm install @circuul/react` |
-| `@circuul/react-native` | React Native, Expo | `npm install @circuul/react-native` |
+| `@thspian/circuul-core` | Shared JS HTTP client | `npm install @thspian/circuul-core` |
+| `@thspian/circuul-react` | React, Next.js, Vite, CRA | `npm install @thspian/circuul-react` |
+| `@thspian/circuul-react-native` | React Native, Expo | `npm install @thspian/circuul-react-native` |
 | `circuul` (Flutter) | Flutter (iOS + Android) | `flutter pub add circuul` |
 | `native/ios/Circuul.swift` | Native iOS (Swift) | Drop file into Xcode |
 | `native/android/Circuul.kt` | Native Android (Kotlin) | Drop file into project |
 
-> You will receive an `appToken` (starts with `cat_…`) from Thspian when your campaign is approved.
+> **Prerequisite:** On [thspian.com](https://thspian.com), create a UGC **app install** (or **web visit**) CPA campaign first. Copy the campaign **app token** (`cat_…`) and pass it into every Circuul `init` / `createClient` call. Without that token, attribution will not work.
 
 ---
 
@@ -38,14 +38,14 @@ Brands create campaigns, creators share unique referral links, and Circuul track
 
 ### Installation
 ```bash
-npm install @circuul/react
+npm install @thspian/circuul-react
 ```
 
 ### Web Visit campaign
 Call `init()` once on page load — typically in your root component or `_app.js`.
 
 ```js
-import { init } from '@circuul/react';
+import { init } from '@thspian/circuul-react';
 
 // Next.js _app.js
 import { useEffect } from 'react';
@@ -67,7 +67,9 @@ function MyApp({ Component, pageProps }) {
 ```
 
 ### App Install campaign (web intermediate page)
-If you have a smart banner or deep-link landing page that redirects to the app store:
+If you have a smart banner or deep-link landing page that redirects to the app store,
+`init({ kind: 'app_install' })` **only stores** the referral code. It does **not** call
+`match()` — install CPA is credited when the native / React Native app opens and matches.
 
 ```js
 init({
@@ -75,6 +77,7 @@ init({
   apiBase: 'https://api.example.com/api/v1',
   kind: 'app_install',
 });
+// → { attributed: false, reason: 'code_stored', code: 'ABCD1234' }
 ```
 
 ### Options
@@ -95,7 +98,7 @@ Works with bare React Native and **Expo**.
 
 ### Installation
 ```bash
-npm install @circuul/react-native
+npm install @thspian/circuul-react-native
 # Expo:
 npx expo install @react-native-async-storage/async-storage
 # Bare React Native:
@@ -107,7 +110,7 @@ cd ios && pod install
 Call `init()` once on cold start — in your root component or app entry point.
 
 ```js
-import { Circuul } from '@circuul/react-native';
+import { Circuul } from '@thspian/circuul-react-native';
 import { Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info'; // optional but recommended
 
@@ -362,7 +365,10 @@ referrerClient.startConnection(object : InstallReferrerStateListener {
 | `rate_limited` | Same IP already attributed within 24h (web visits) |
 | `duplicate` | Already attributed for this device (app installs) |
 | `program_inactive` | Campaign or program is no longer active |
-| `network_error` | Could not reach the API |
+| `code_stored` | Web landing stamped the ref for later native match |
+| `code_app_mismatch` | Creator code does not belong to this app token |
+| `invalid_app_token` | Missing or unknown app token |
+| `network_error` | Could not reach the API — client will retry next load |
 | `error` | Unexpected error — attribution did not occur |
 
 ---
