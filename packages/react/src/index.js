@@ -35,20 +35,76 @@ function ensureInstallId() {
 }
 
 /**
- * Persist ?ref= from the URL and optionally match on first visit.
- * Safe to call on every page load; never throws.
+ * Initialise Circuul on a brand's web page. Safe to call on every page load; never throws.
+ *
+ * For `web_visit` campaigns (ecommerce / landing pages):
+ *   - Reads `circuul_ref` from the URL (appended by the server redirect)
+ *   - Calls POST /circuul/visit-confirm to confirm the visit and accrue CPA
+ *
+ * For `app_install` campaigns (smart banner / deep-link landing pages):
+ *   - Reads ref code from URL query params
+ *   - Calls POST /circuul/match
+ *
+ * @param {{
+ *   appToken: string,
+ *   apiBase: string,
+ *   kind?: 'web_visit' | 'app_install',
+ *   search?: string,
+ *   autoConfirm?: boolean,
+ * }} options
  */
 async function init(options = {}) {
-  const { appToken, apiBase, search, autoMatch = true } = options;
+  const {
+    appToken,
+    apiBase,
+    kind = 'web_visit',
+    search,
+    autoConfirm = true,
+  } = options;
+
   try {
-    const fromUrl = extractCodeFromSearch(
-      search ||
-        (typeof window !== 'undefined' ? window.location.search : '')
-    );
+    const client = createClient({ appToken, apiBase });
+    const locationSearch =
+      search || (typeof window !== 'undefined' ? window.location.search : '');
+
+    if (kind === 'web_visit') {
+      // circuul_ref is appended by our server to the redirect URL for web_visit campaigns.
+      const params = new URLSearchParams(
+        locationSearch.startsWith('?') ? locationSearch : `?${locationSearch}`
+      );
+      const code =
+        params.get('circuul_ref') || extractCodeFromSearch(locationSearch);
+
+      if (!code) return { client, attributed: false, reason: 'no_code' };
+
+      // Persist so attribution still works if the user navigates within the site.
+      storageSet(STORAGE_KEY, code);
+
+      if (!autoConfirm) return { client, attributed: false, skipped: true };
+
+      if (storageGet(MATCHED_KEY) === '1') {
+        return { client, attributed: false, reason: 'already_matched' };
+      }
+
+      // Set flag synchronously before the async call to prevent React Strict Mode
+      // double-invoke from sending two concurrent visit-confirm requests.
+      storageSet(MATCHED_KEY, '1');
+
+      const result = await client.visitConfirm({
+        code,
+        install_id: ensureInstallId(),
+        user_agent:
+          typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
+      });
+
+      return { client, ...result };
+    }
+
+    // app_install — web intermediate page (e.g. smart banner / deep-link landing).
+    const fromUrl = extractCodeFromSearch(locationSearch);
     if (fromUrl) storageSet(STORAGE_KEY, fromUrl);
 
-    const client = createClient({ appToken, apiBase });
-    if (!autoMatch) return { client, attributed: false, skipped: true };
+    if (!autoConfirm) return { client, attributed: false, skipped: true };
 
     if (storageGet(MATCHED_KEY) === '1') {
       return { client, attributed: false, reason: 'already_matched' };
@@ -63,6 +119,7 @@ async function init(options = {}) {
       user_agent:
         typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
     });
+
     storageSet(MATCHED_KEY, '1');
     return { client, ...result };
   } catch {

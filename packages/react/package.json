@@ -1,9 +1,21 @@
 {
   "name": "@circuul/react",
   "version": "0.1.0",
-  "description": "Circuul React / Next.js helpers",
+  "description": "Circuul web-visit and app-install attribution helpers for React and Next.js",
   "main": "src/index.js",
+  "types": "src/index.d.ts",
   "license": "UNLICENSED",
+  "author": "Thspian",
+  "keywords": ["circuul", "attribution", "react", "nextjs", "web-visit", "app-install"],
+  "homepage": "https://thspian.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thspian/circuul.git",
+    "directory": "packages/react"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "peerDependencies": {
     "react": ">=17"
   },
