@@ -1,6 +1,6 @@
 {
   "name": "@thspian/circuul-react-native",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Thspian's circuul app-install attribution client for React Native and Expo",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -34,7 +34,7 @@
     "@react-native-async-storage/async-storage": "*"
   },
   "dependencies": {
-    "@thspian/circuul-core": "^0.1.0"
+    "@thspian/circuul-core": "^0.1.2"
   },
   "files": [
     "src",
