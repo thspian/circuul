@@ -4,7 +4,7 @@
   "description": "Circuul install attribution core client — framework-agnostic",
   "main": "src/index.js",
   "types": "src/index.d.ts",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "author": "Thspian",
   "keywords": ["circuul", "attribution", "app-install", "web-visit", "thspian"],
   "repository": {
@@ -24,6 +24,7 @@
   },
   "files": [
     "src",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ]
 }

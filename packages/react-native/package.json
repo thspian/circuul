@@ -4,7 +4,7 @@
   "description": "Thspian's circuul app-install attribution client for React Native and Expo",
   "main": "src/index.js",
   "types": "src/index.d.ts",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "author": "Thspian",
   "keywords": [
     "circuul",
@@ -38,6 +38,7 @@
   },
   "files": [
     "src",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ]
 }
